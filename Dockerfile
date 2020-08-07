@@ -38,12 +38,14 @@ RUN apk add --no-cache \
 # Install PECL and PEAR extensions
 RUN pecl install \
     imagick \
-    xdebug
+    xdebug \
+    redis
 
 # Enable PECL and PEAR extensions
 RUN docker-php-ext-enable \
     imagick \
-    xdebug
+    xdebug \
+    redis
 
 # Configure php extensions
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
@@ -73,7 +75,8 @@ ENV COMPOSER_HOME /composer
 ENV PATH ./vendor/bin:/composer/vendor/bin:$PATH
 ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN curl -s https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
-
+RUN echo "\nmemory_limit=-1" >> /etc/php/7.3/cli/php.ini
+ 
 # Install PHP_CodeSniffer
 RUN composer global require "squizlabs/php_codesniffer=*"
 
